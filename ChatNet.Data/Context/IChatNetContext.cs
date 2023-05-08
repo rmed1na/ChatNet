@@ -8,6 +8,7 @@ namespace ChatNet.Data.Context
         #region Data set
         DbSet<User> Users { get; }
         DbSet<ChatRoom> ChatRooms { get; }
+        DbSet<ChatRoomPost> ChatRoomPosts { get; }
         #endregion
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

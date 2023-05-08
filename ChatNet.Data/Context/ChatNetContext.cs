@@ -9,6 +9,7 @@ namespace ChatNet.Data.Context
         #region Data sets
         public DbSet<User> Users => Set<User>();
         public DbSet<ChatRoom> ChatRooms => Set<ChatRoom>();
+        public DbSet<ChatRoomPost> ChatRoomPosts => Set<ChatRoomPost>();
         #endregion
 
         public ChatNetContext() { }

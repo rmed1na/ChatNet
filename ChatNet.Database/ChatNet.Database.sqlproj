@@ -65,5 +65,6 @@
   <ItemGroup>
     <Build Include="Tables\Users.sql" />
     <Build Include="Tables\ChatRooms.sql" />
+    <Build Include="Tables\ChatRoomPosts.sql" />
   </ItemGroup>
 </Project>

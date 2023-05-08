@@ -24,6 +24,13 @@ namespace ChatNet.Data.Context.Configuration
                 e.HasKey(x => x.ChatRoomId);
                 e.Property(x => x.ChatRoomId).UseIdentityColumn();
             });
+
+            builder.Entity<ChatRoomPost>(e =>
+            {
+                e.ToTable("ChatRoomPost");
+                e.HasKey(x => x.ChatRoomPostId);
+                e.Property(x => x.ChatRoomPostId).UseIdentityColumn();
+            });
         }
     }
 }
