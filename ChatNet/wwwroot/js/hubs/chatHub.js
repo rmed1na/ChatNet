@@ -1,8 +1,16 @@
 "use strict";
 
 let started = false;
+let roomId = parseInt(document.getElementById('chatContainer').getAttribute('data-roomId'));
 let connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 disableSend();
+
+connection.start().then(function () {
+    started = true;
+    subscribeToChatroom();
+}).catch(function (err) {
+    return console.error(err.toString());
+});
 
 connection.on("NewMessageReceived", function (user, timestamp, message) {
     let parent = document.getElementById('messagesContainer');
@@ -15,16 +23,10 @@ connection.on("NewMessageReceived", function (user, timestamp, message) {
     parent.scrollTo(0, parent.scrollHeight);
 });
 
-connection.start().then(function () {
-    started = true;
-}).catch(function (err) {
-    return console.error(err.toString());
-});
-
 document.getElementById("btnSendMessage").addEventListener("click", function (event) {
     let input = document.getElementById('messageText');
     let message = input.value;
-    connection.invoke("SendMessage", message).catch(function (err) {
+    connection.invoke("SendMessage", message, roomId).catch(function (err) {
         return console.error(err.toString());
     });
     input.value = '';
@@ -41,6 +43,18 @@ document.getElementById('messageText').addEventListener('keyup', function (event
 function disableSend() {
     document.getElementById("btnSendMessage").disabled = true;
 }
+
 function enableSend() {
     document.getElementById("btnSendMessage").disabled = false;
+}
+
+function subscribeToChatroom() {
+    if (isNaN(roomId)) {
+        console.warn(`Can't subscribe to chatroom. Integer conversion failed. (${roomId})`);
+        return;
+    }
+
+    connection.invoke("SubscribeToChatroom", roomId).catch(function (err) {
+        return console.error(err.toString());
+    });
 }

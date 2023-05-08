@@ -10,6 +10,7 @@
     <Content Remove="wwwroot\css\account\Login.scss" />
     <Content Remove="wwwroot\css\account\Register.scss" />
     <Content Remove="wwwroot\css\chat\chat.scss" />
+    <Content Remove="wwwroot\css\chat\room.scss" />
     <Content Remove="wwwroot\css\common.scss" />
   </ItemGroup>
 
@@ -40,6 +41,7 @@
     <None Include="wwwroot\css\account\Login.scss" />
     <None Include="wwwroot\css\account\Register.scss" />
     <None Include="wwwroot\css\chat\chat.scss" />
+    <None Include="wwwroot\css\chat\room.scss" />
     <None Include="wwwroot\css\common.scss" />
   </ItemGroup>
 
@@ -53,6 +55,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="wwwroot\css\account\Register.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="wwwroot\css\chat\room.scss" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,11 @@
-﻿@{
+﻿@model ChatRoom
+@{
     ViewData["Title"] = "Chat";
 }
 <link rel="stylesheet" type="text/css" href="~/css/Chat/chat.css" />
-<div class="chat">
+<div id="chatContainer" class="chat" data-roomId="@Model.ChatRoomId">
+    <h2>@Model.Name chatroom</h2>
+    <hr />
     <div id="messagesContainer" class="list">
     </div>
     <div class="input">

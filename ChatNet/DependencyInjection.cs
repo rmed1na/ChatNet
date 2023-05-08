@@ -7,10 +7,15 @@ namespace ChatNet
     {
         public static void Configure(IServiceCollection services)
         {
-            #region Scoped
+            #region Context
             services.AddScoped<IChatNetContext, ChatNetContext>();
-            services.AddScoped<IUserRepository, UserRepository>();
             #endregion
+
+            #region Repositories
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            #endregion
+
         }
     }
 }

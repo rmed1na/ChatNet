@@ -62,5 +62,21 @@ h2 {
 }
 
 /*#endregion GENERAL */
+/*#region FLEX */
+.flex {
+  display: flex;
+  flex-direction: row;
+}
+.flex__column {
+  flex-direction: column;
+}
+.flex__space-between {
+  justify-content: space-between;
+}
+.flex__align-items--center {
+  align-items: center;
+}
+
+/*#endregion FLEX */
 
 /*# sourceMappingURL=common.css.map */

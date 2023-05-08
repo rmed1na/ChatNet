@@ -61,3 +61,24 @@ h2 {
     font-weight: 600;
 }
 /*#endregion GENERAL */
+
+/*#region FLEX */
+.flex {
+    display: flex;
+    flex-direction: row;
+
+    &__column {
+        flex-direction: column;
+    }
+
+    &__space-between {
+        justify-content: space-between;
+    }
+
+    &__align-items {
+        &--center {
+            align-items: center;
+        }
+    }
+}
+/*#endregion FLEX */

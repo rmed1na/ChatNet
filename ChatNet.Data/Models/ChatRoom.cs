@@ -8,5 +8,10 @@ namespace ChatNet.Data.Models
         public int ChatRoomId { get; set; }
         public string Name { get; set; } = string.Empty;
         public GlobalStatusCode StatusCode { get; set; }
+
+        public ChatRoom()
+        {
+            StatusCode = GlobalStatusCode.Active;
+        }
     }
 }
