@@ -1,0 +1,44 @@
+﻿@model LoginViewModel
+@{
+    Layout = null;
+    var controller = "Auth";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatNet - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/Account/Login.css" />
+</head>
+<body>
+    <div class="login">
+        <div class="card">
+            <h2 class="card__title">ChatNet</h2>
+            <div class="card__body">
+                <form asp-controller="@controller" asp-action="@nameof(AuthController.Login)" method="POST">
+                    <div class="card__body card__body--input">
+                        <label asp-for="Username">Username:</label>
+                        <input asp-for="Username" type="text" />
+                    </div>
+                    <div class="card__body card__body--input">
+                        <label asp-for="Password">Password:</label>
+                        <input asp-for="Password" type="password" />
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+            <div class="card__footer">
+                <label>Don't have an account yet?</label>
+                <a asp-controller="@controller" asp-action="@nameof(AuthController.Register)">Register now!</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</body>
+</html>

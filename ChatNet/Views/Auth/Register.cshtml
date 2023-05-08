@@ -1,0 +1,53 @@
+﻿@model UserRegistrationViewModel
+@{
+    Layout = null;
+    var controller = "Auth";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatNet - Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+</head>
+<body>
+    <div class="register">
+        <div class="card">
+            <h2 class="card__title">Register a new account</h2>
+            <div class="card__body">
+                <div class="card__body--input">
+                    <form asp-controller="@controller" asp-action="@nameof(AuthController.Register)" method="POST">
+                        <div class="card__body card__body--input">
+                            <label asp-for="Username">Username:</label>
+                            <input asp-for="Username" type="text" />
+                        </div>
+                        <div class="card__body card__body--input">
+                            <label asp-for="FirstName">First name:</label>
+                            <input asp-for="FirstName" type="text" />
+                        </div>
+                        <div class="card__body card__body--input">
+                            <label asp-for="LastName">Last name:</label>
+                            <input asp-for="LastName" type="text" />
+                        </div>
+                        <div class="card__body card__body--input">
+                            <label asp-for="Password">Password:</label>
+                            <input asp-for="Password" type="password" />
+                        </div>
+                        <button type="submit">Create account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <a asp-controller="@controller" asp-action="@nameof(AuthController.Login)">Back to login page</a>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</body>
+</html>

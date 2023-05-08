@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Chat";
+}
+<link rel="stylesheet" type="text/css" href="~/css/Chat/chat.css" />
+<div class="chat">
+    <div id="messagesContainer" class="list">
+    </div>
+    <div class="input">
+        <textarea id="messageText"></textarea>
+        <button id="btnSendMessage">Send</button>
+    </div>
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/hubs/chatHub.js"></script>

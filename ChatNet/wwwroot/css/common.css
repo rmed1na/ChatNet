@@ -1,0 +1,66 @@
+/*#region RESET */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, label, span,
+ul {
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+input, button, select, optgroup, textarea {
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a, button, input {
+  outline: none !important;
+}
+
+ul {
+  list-style-type: none;
+}
+
+/*#endregion RESET */
+/*#region GENERAL */
+html, body {
+  font-family: "Roboto Mono", monospace;
+  font-size: 16px;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+/*#endregion GENERAL */
+
+/*# sourceMappingURL=common.css.map */
