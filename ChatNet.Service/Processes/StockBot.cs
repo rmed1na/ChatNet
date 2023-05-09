@@ -15,31 +15,28 @@ namespace ChatNet.Service.Processes
         private readonly HttpClient _httpClient;
         private readonly ServiceSettings _settings;
 
-        public StockBot(IServiceProvider serviceProvider)
+        public StockBot(ServiceSettings settings)
         {
-            var settings = serviceProvider.GetRequiredService<ServiceSettings>();
             ArgumentNullException.ThrowIfNull(settings);
-
             _settings = settings;
+            _httpClient = new HttpClient();
 
             var factory = new ConnectionFactory
             {
                 HostName = _settings.MessageBroker.Server,
                 UserName = _settings.MessageBroker.User,
                 Password = _settings.MessageBroker.Password
-            };
-
-            _httpClient = new HttpClient();
+            };            
+            
             var connection = factory.CreateConnection();
-            _channel = connection.CreateModel();
 
+            _channel = connection.CreateModel();
             _channel.QueueDeclare(
                 queue: MessageBroker.RequestQueue,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
-
             _channel.QueueDeclare(
                 queue: MessageBroker.ResponseQueue,
                 durable: false,
@@ -57,7 +54,7 @@ namespace ChatNet.Service.Processes
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (sender, args) => 
             { 
-                var result = await ListenAsync(sender, args);
+                var result = await GetStockQuoteAsync(sender, args);
                 Reply(result);
             };
 
@@ -74,16 +71,16 @@ namespace ChatNet.Service.Processes
         /// <param name="args">Arguments</param>
         /// <returns></returns>
         /// <exception cref="InvalidDataException"></exception>
-        private async Task<string> ListenAsync(object? sender, BasicDeliverEventArgs args)
+        private async Task<string> GetStockQuoteAsync(object? sender, BasicDeliverEventArgs args)
         {
-            Console.WriteLine($"New message in broker received at: {DateTime.Now:dd MMM yyyy hh:mm:ss}");
+            Console.WriteLine($"New message in broker received at: {DateTime.Now:dd MMM yyyy hh:mm:ss} on [{MessageBroker.RequestQueue}]");
             ArgumentNullException.ThrowIfNull(sender);
             ArgumentException.ThrowIfNullOrEmpty(_settings.StockApiUrl);
 
             try
             {
                 var ticker = GetTickerSymbol(args.Body.ToArray());
-                var url = _settings.StockApiUrl.Replace("[ticker]", ticker); //$"https://stooq.com/q/l/?s={ticker}&f=sd2t2ohlcv&h&e=csv";
+                var url = _settings.StockApiUrl.Replace("[ticker]", ticker);
                 var apiResponse = await _httpClient.GetAsync(url);
 
                 apiResponse.EnsureSuccessStatusCode();
@@ -116,6 +113,7 @@ namespace ChatNet.Service.Processes
         /// <param name="response">The current stock quote on the market at close time</param>
         private void Reply(string response)
         {
+            Console.WriteLine($"Sending back result ({response}) on [{MessageBroker.ResponseQueue}]");
             var bytes = Encoding.UTF8.GetBytes(response);
 
             _channel.BasicPublish(

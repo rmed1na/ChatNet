@@ -1,21 +1,23 @@
+using ChatNet.Data.Models.Settings;
 using ChatNet.Service.Processes;
+using Microsoft.Extensions.Options;
 
 namespace ChatNet.Service
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ServiceSettings _settings;
 
-        public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
+        public Worker(ILogger<Worker> logger, IOptions<ServiceSettings> options)
         {
             _logger = logger;
-            _serviceProvider = serviceProvider;
+            _settings = options.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var stockBot = new StockBot(_serviceProvider);
+            var stockBot = new StockBot(_settings);
             stockBot.ListenAndReply();
 
             while (!stoppingToken.IsCancellationRequested)
