@@ -1,4 +1,5 @@
-﻿using ChatNet.Data.Models.Settings;
+﻿using ChatNet.Data.Models.Constants;
+using ChatNet.Data.Models.Settings;
 using ChatNet.Utils.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -32,13 +33,13 @@ namespace ChatNet.Service.Processes
 
             _channel = connection.CreateModel();
             _channel.QueueDeclare(
-                queue: MessageBroker.RequestQueue,
+                queue: MessageBrokerParams.REQUEST_QUEUE_NAME,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
             _channel.QueueDeclare(
-                queue: MessageBroker.ResponseQueue,
+                queue: MessageBrokerParams.RESPONSE_QUEUE_NAME,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
@@ -59,7 +60,7 @@ namespace ChatNet.Service.Processes
             };
 
             _channel.BasicConsume(
-                queue: MessageBroker.RequestQueue,
+                queue:  MessageBrokerParams.REQUEST_QUEUE_NAME,
                 autoAck: true,
                 consumer: consumer);
         }
@@ -73,7 +74,7 @@ namespace ChatNet.Service.Processes
         /// <exception cref="InvalidDataException"></exception>
         private async Task<string> GetStockQuoteAsync(object? sender, BasicDeliverEventArgs args)
         {
-            Console.WriteLine($"New message in broker received at: {DateTime.Now:dd MMM yyyy hh:mm:ss} on [{MessageBroker.RequestQueue}]");
+            Console.WriteLine($"New message in broker received at: {DateTime.Now:dd MMM yyyy hh:mm:ss} on [{MessageBrokerParams.REQUEST_QUEUE_NAME}]");
             ArgumentNullException.ThrowIfNull(sender);
             ArgumentException.ThrowIfNullOrEmpty(_settings.StockApiUrl);
 
@@ -113,12 +114,12 @@ namespace ChatNet.Service.Processes
         /// <param name="response">The current stock quote on the market at close time</param>
         private void Reply(string response)
         {
-            Console.WriteLine($"Sending back result ({response}) on [{MessageBroker.ResponseQueue}]");
+            Console.WriteLine($"Sending back result ({response}) on [{MessageBrokerParams.RESPONSE_QUEUE_NAME}]");
             var bytes = Encoding.UTF8.GetBytes(response);
 
             _channel.BasicPublish(
                 exchange: string.Empty,
-                routingKey: MessageBroker.ResponseQueue,
+                routingKey: MessageBrokerParams.RESPONSE_QUEUE_NAME,
                 basicProperties: null,
                 body: bytes);
         }
