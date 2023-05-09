@@ -7,6 +7,12 @@ namespace ChatNet.Utils.Chats
 {
     public static class ChatDisplayUtility
     {
+        /// <summary>
+        /// Builds the message that will be displayed on the user screen from a post inside the chatroom
+        /// </summary>
+        /// <param name="post">The chatroom post object</param>
+        /// <param name="externalOwnerName">External user (in case the user doesn't have a login)</param>
+        /// <returns></returns>
         public static string BuildMessage(ChatRoomPost post, string? externalOwnerName = null)
         {
             var htmlSanitizer = new HtmlSanitizer();

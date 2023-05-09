@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChatNet.Controllers
 {
+    /// <summary>
+    /// Chat controller
+    /// </summary>
     [Route("[controller]")]
     [Authorize]
     public class ChatController : Controller
@@ -15,6 +18,10 @@ namespace ChatNet.Controllers
         public ChatController(IChatRepository chatRepo)
             => _chatRepo = chatRepo;
 
+        /// <summary>
+        /// Chat rooms list view
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("rooms")]
         public async Task<IActionResult> ChatRooms()
@@ -23,6 +30,11 @@ namespace ChatNet.Controllers
             return View("~/Views/Chat/Rooms.cshtml", rooms);
         }
 
+        /// <summary>
+        /// Specific chat room by requested ID
+        /// </summary>
+        /// <param name="roomId">Room identifier</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("room/{roomId:int}")]
         public async Task<IActionResult> Chat(int roomId)
@@ -42,11 +54,20 @@ namespace ChatNet.Controllers
             return View("~/Views/Chat/Chat.cshtml", viewModel);
         }
 
+        /// <summary>
+        /// New chat room view creation
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("room/new")]
         public IActionResult NewChatRoom()
             => View("~/Views/Chat/NewRoom.cshtml");
 
+        /// <summary>
+        /// Creates a new chat room with provided information about it
+        /// </summary>
+        /// <param name="model">Room data</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("room/new")]
         public async Task<IActionResult> NewChatRoom(ChatRoomViewModel model)

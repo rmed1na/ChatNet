@@ -18,6 +18,10 @@ namespace ChatNet.Data.Context
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await base.SaveChangesAsync(cancellationToken);
 
+        /// <summary>
+        /// Configures models mapping (database first approach)
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

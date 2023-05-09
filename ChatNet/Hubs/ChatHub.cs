@@ -23,6 +23,11 @@ namespace ChatNet.Hubs
         private readonly IModel _messageBroker;
         private readonly IHubContext<ChatHub> _hubCtx;
 
+        /// <summary>
+        /// Chatroom group name builder (i.e: chatroom:1, chatroom:2)
+        /// </summary>
+        /// <param name="roomId">The chatroom identifier</param>
+        /// <returns></returns>
         private static string ChatroomGroup(int roomId) => $"chatroom:{roomId}";
 
         public ChatHub(
@@ -70,6 +75,13 @@ namespace ChatNet.Hubs
                 consumer: consumer);
         }
 
+        /// <summary>
+        /// Sends a message to a group of users inside a chatroom
+        /// </summary>
+        /// <param name="message">Message content</param>
+        /// <param name="roomId">Chatroom identifier</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException"></exception>
         public async Task SendMessage(string message, int roomId)
         {
             try
@@ -100,6 +112,13 @@ namespace ChatNet.Hubs
             }
         }
 
+        /// <summary>
+        /// Sends a message to a group of users inside a chatroom, as a bot (external user)
+        /// </summary>
+        /// <param name="sender">Caller object</param>
+        /// <param name="args">Caller arguments</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidCastException"></exception>
         public async Task SendBotMessageAsync(object? sender, BasicDeliverEventArgs args)
         {
             if (_hubCtx == null)
@@ -126,25 +145,53 @@ namespace ChatNet.Hubs
             }
         }
 
+        /// <summary>
+        /// Subcribes a user into a chatroom to receive it's messages
+        /// </summary>
+        /// <param name="roomId">Chatroom identifier</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task SubscribeToChatroom(int roomId)
         {
             var room = await _chatRepo.GetRoomAsync(roomId) ?? throw new InvalidOperationException("Chatroom not found. Can't subscribe to it");
             await Groups.AddToGroupAsync(Context.ConnectionId, ChatroomGroup(room.ChatRoomId));
         }
 
+        /// <summary>
+        /// Sends exception messages (in case they happen) into the chatroom silently (via console.log on the clients)
+        /// for better & easier debugging
+        /// </summary>
+        /// <param name="ex">The exception to be sent</param>
+        /// <returns></returns>
         public async Task SendException(Exception ex)
             => await Clients.Caller.SendAsync("HubException", ex.ToString());
 
         #region Helpers
+        /// <summary>
+        /// Gets the user data from the requesting user
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException"></exception>
         private IdentityUserData GetUserData()
             => IdentityUtility.GetIdentityUserData(Context.User?.Identity) ?? throw new InvalidDataException("User data not found");
 
+        /// <summary>
+        /// Gets the chatroom by it's identifier
+        /// </summary>
+        /// <param name="roomId">Chatroom identifier</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException"></exception>
         private async Task<ChatRoom> GetChatRoomAsync(int roomId)
         {
             var room = await _chatRepo.GetRoomAsync(roomId);
-            return room ?? throw new InvalidDataException("Chat room not found"); ;
+            return room ?? throw new InvalidDataException("Chat room not found");
         }
 
+        /// <summary>
+        /// Creates a new request for the chatbot to go and get a stock quote
+        /// </summary>
+        /// <param name="command">The command user for the stock (i.e.: /stock=aapl.us)</param>
+        /// <param name="roomId">Chatroom identifier</param>
         private void SendStockQuoteRequest(string command, int roomId)
         {
             var requestJson = new MessageBrokerRequest

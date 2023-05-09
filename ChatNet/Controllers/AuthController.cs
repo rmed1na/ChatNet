@@ -10,6 +10,9 @@ using System.Security.Claims;
 
 namespace ChatNet.Controllers
 {
+    /// <summary>
+    /// Authentication controller
+    /// </summary>
     public class AuthController : Controller
     {
         private readonly IUserRepository _userRepo;
@@ -19,6 +22,10 @@ namespace ChatNet.Controllers
             _userRepo = userRepo;
         }
 
+        /// <summary>
+        /// Login view
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Login()
         {
@@ -28,6 +35,11 @@ namespace ChatNet.Controllers
             return View("~/Views/Auth/Login.cshtml");
         }
 
+        /// <summary>
+        /// Logs in the user with the provided credentials
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -62,6 +74,10 @@ namespace ChatNet.Controllers
             return Redirect("/home");
         }
 
+        /// <summary>
+        /// Logs out the user session
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Logout()
@@ -70,12 +86,21 @@ namespace ChatNet.Controllers
             return Redirect("/auth/login");
         }
 
+        /// <summary>
+        /// Register view
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Register()
         {
             return View("~/Views/Auth/Register.cshtml");
         }
 
+        /// <summary>
+        /// Creates a new user on the system
+        /// </summary>
+        /// <param name="model">User information object</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Register(UserRegistrationViewModel model)
         {
@@ -84,7 +109,6 @@ namespace ChatNet.Controllers
             if (string.IsNullOrEmpty(model.Password))
                 return BadRequest("Password must be provided");
 
-            // TODO: implement a password strength check (1 number, 1 special char, 1 upper case min, 8 min total length)
             var isUsernameTaken = await _userRepo.UsernameExistsAsync(model.Username);
             if (isUsernameTaken)
                 return Conflict("Username is already taken. Please choose another one");

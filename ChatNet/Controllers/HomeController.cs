@@ -6,6 +6,9 @@ using System.Diagnostics;
 
 namespace ChatNet.Controllers
 {
+    /// <summary>
+    /// Home controller
+    /// </summary>
     [Route("[controller]")]
     [Authorize]
     public class HomeController : Controller
@@ -17,6 +20,10 @@ namespace ChatNet.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Main view (/index)
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         [Route("index")]
@@ -24,13 +31,6 @@ namespace ChatNet.Controllers
         {
             var userData = IdentityUtility.GetIdentityUserData(HttpContext.User?.Identity);
             ViewData["username"] = userData?.Username;
-            return View();
-        }
-
-        [HttpGet]
-        [Route("chat")]
-        public IActionResult Chat()
-        {
             return View();
         }
 
