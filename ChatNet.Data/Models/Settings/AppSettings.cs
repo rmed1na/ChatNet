@@ -1,4 +1,4 @@
-﻿namespace ChatNet.Models.Settings
+﻿namespace ChatNet.Data.Models.Settings
 {
     public class AppSettings
     {
