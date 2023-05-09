@@ -13,7 +13,7 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-connection.on("NewMessageReceived", function (user, timestamp, message) {
+connection.on("NewMessageReceived", function (message) {
     let parent = document.getElementById('messagesContainer');
     let chatItem = document.createElement('div');
 

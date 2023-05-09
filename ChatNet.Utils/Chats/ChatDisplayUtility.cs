@@ -6,7 +6,7 @@ namespace ChatNet.Utils.Chats
 {
     public static class ChatDisplayUtility
     {
-        public static string BuildMessage(ChatRoomPost post)
+        public static string BuildMessage(ChatRoomPost post, string? externalOwnerName = null)
         {
             //TODO: Sanitize message content to avoid code injection
             var builder = new StringBuilder();
@@ -17,6 +17,8 @@ namespace ChatNet.Utils.Chats
 
             if (post.Owner != null)
                 builder.Append(post.Owner.Username);
+            else if (!string.IsNullOrEmpty(externalOwnerName))
+                builder.Append(externalOwnerName);
             else
                 builder.Append("?????");
 

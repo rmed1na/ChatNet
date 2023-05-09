@@ -1,9 +1,14 @@
-﻿using ChatNet.Data.Models.Constants;
+﻿using Azure;
+using Azure.Core;
+using ChatNet.Data.Models;
+using ChatNet.Data.Models.Constants;
 using ChatNet.Data.Models.Settings;
+using ChatNet.Utils.Object;
 using ChatNet.Utils.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using System.Text.Json;
 
 namespace ChatNet.Service.Processes
 {
@@ -72,18 +77,25 @@ namespace ChatNet.Service.Processes
         /// <param name="args">Arguments</param>
         /// <returns></returns>
         /// <exception cref="InvalidDataException"></exception>
-        private async Task<string> GetStockQuoteAsync(object? sender, BasicDeliverEventArgs args)
+        private async Task<MessageBrokerResponse> GetStockQuoteAsync(object? sender, BasicDeliverEventArgs args)
         {
             Console.WriteLine($"New message in broker received at: {DateTime.Now:dd MMM yyyy hh:mm:ss} on [{MessageBrokerParams.REQUEST_QUEUE_NAME}]");
             ArgumentNullException.ThrowIfNull(sender);
             ArgumentException.ThrowIfNullOrEmpty(_settings.StockApiUrl);
 
+            var response = new MessageBrokerResponse();
+
             try
             {
-                var ticker = GetTickerSymbol(args.Body.ToArray());
+                var request = GetRequest(args.Body.ToArray());
+                response.RoomId = request.RoomId;
+
+                var ticker = GetTickerSymbol(request);
                 var url = _settings.StockApiUrl.Replace("[ticker]", ticker);
                 var apiResponse = await _httpClient.GetAsync(url);
 
+                response.RoomId = request.RoomId;
+                response.Success = true;
                 apiResponse.EnsureSuccessStatusCode();
 
                 var data = await apiResponse.Content.ReadAsStringAsync();
@@ -97,25 +109,33 @@ namespace ChatNet.Service.Processes
                     throw new InvalidDataException("Row doesn't have any data");
 
                 if (decimal.TryParse(values[6], out decimal quote))
-                    return $"{ticker.ToUpper()} quote is ${quote} per share";
+                    response.Response = $"{ticker.ToUpper()} quote is ${Math.Round(quote, 2)} per share";
+                else if (values[6].Contains("N/D"))
+                    throw new InvalidDataException($"Stock ticker symbol doesn't have pricing data. Make sure the '{ticker}' ticker symbol is correct.");
                 else
-                    throw new InvalidDataException("Can't parse quote value");
+                    throw new InvalidDataException($"Can't parse a quote value for ticker '{ticker}'");
             }
             catch (Exception ex)
             {
-                return $"StockBot exception: {ex.Message}";
-                throw;
+                response.Success = false;
+                response.Response = $"ERROR: {ex.Message}";
             }
+
+            return response;
         }
 
         /// <summary>
         /// Gives back the quote response in the response queue
         /// </summary>
         /// <param name="response">The current stock quote on the market at close time</param>
-        private void Reply(string response)
+        private void Reply(MessageBrokerResponse response)
         {
-            Console.WriteLine($"Sending back result ({response}) on [{MessageBrokerParams.RESPONSE_QUEUE_NAME}]");
-            var bytes = Encoding.UTF8.GetBytes(response);
+            Console.WriteLine($"Sending back result ({response.Response}) on [{MessageBrokerParams.RESPONSE_QUEUE_NAME}] | Success: {response.Success}");
+
+            var responseJson = response.ToJson();
+            ArgumentException.ThrowIfNullOrEmpty(responseJson);
+
+            var bytes = Encoding.UTF8.GetBytes(responseJson);
 
             _channel.BasicPublish(
                 exchange: string.Empty,
@@ -131,14 +151,29 @@ namespace ChatNet.Service.Processes
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">When the command is empty or null</exception>
         /// <exception cref="InvalidDataException">When the command is invalid</exception>
-        private static string GetTickerSymbol(byte[] bytes)
+        private static MessageBrokerRequest GetRequest(byte[] bytes)
         {
-            var command = Encoding.UTF8.GetString(bytes);
+            var requestJson = Encoding.UTF8.GetString(bytes);
+            return JsonSerializer.Deserialize<MessageBrokerRequest>(requestJson) ?? throw new InvalidCastException("Can't deserialize request object (is null).");
+        }
+
+        /// <summary>
+        /// Extracts the ticker symbol from the command value and validates that the command is valid
+        /// </summary>
+        /// <param name="request">The message broker request object</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="InvalidDataException"></exception>
+        private static string GetTickerSymbol(MessageBrokerRequest request)
+        {
+            var command = request.Command;
+
             if (string.IsNullOrEmpty(command))
                 throw new InvalidOperationException("Missing command");
 
-            if (!command.IsValidCommand())
-                throw new InvalidDataException($"The command '{command}' is not valid");
+            if (!command.IsValidCommand(out string reason))
+                throw new InvalidDataException($"The command '{command}' is not valid. Reason: {reason}. " +
+                    $"Please use any of the accepted commands: {string.Join(",", MessageBrokerParams.Commands)}");
 
             return command.Split('=')[1];
         }
