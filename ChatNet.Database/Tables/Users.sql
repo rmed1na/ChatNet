@@ -1,0 +1,11 @@
+﻿CREATE TABLE [Users]
+(
+	[UserId] INT IDENTITY NOT NULL,
+	[CreatedDate] DATETIME NOT NULL,
+	[UpdatedDate] DATETIME NULL,
+	[Username] NVARCHAR(64) NOT NULL,
+	[FirstName] NVARCHAR(32) NULL,
+	[LastName] NVARCHAR(32) NULL,
+	[Password] NVARCHAR(1024) NOT NULL,
+	CONSTRAINT [PK_Users] PRIMARY KEY (UserId)
+)

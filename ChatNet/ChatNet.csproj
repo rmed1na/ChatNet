@@ -6,4 +6,59 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\css\account\Login.scss" />
+    <Content Remove="wwwroot\css\account\Register.scss" />
+    <Content Remove="wwwroot\css\chat\chat.scss" />
+    <Content Remove="wwwroot\css\chat\room.scss" />
+    <Content Remove="wwwroot\css\common.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.62.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChatNet.Data\ChatNet.Data.csproj" />
+    <ProjectReference Include="..\ChatNet.Utils\ChatNet.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\Account\" />
+    <Folder Include="wwwroot\css\Chat\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="wwwroot\css\common.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\account\Login.scss" />
+    <None Include="wwwroot\css\account\Register.scss" />
+    <None Include="wwwroot\css\chat\chat.scss" />
+    <None Include="wwwroot\css\chat\room.scss" />
+    <None Include="wwwroot\css\common.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="wwwroot\css\chat\chat.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="wwwroot\css\account\Login.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="wwwroot\css\account\Register.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="wwwroot\css\chat\room.scss" />
+  </ItemGroup>
+
 </Project>

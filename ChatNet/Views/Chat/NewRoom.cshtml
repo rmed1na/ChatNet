@@ -1,0 +1,18 @@
+﻿@model ChatRoomViewModel
+@{
+    ViewData["Title"] = "New chatroom";
+}
+<div>
+    <div class="flex flex__space-between flex__align-items--center">
+        <h2>New chatroom</h2>
+        <a style="text-decoration: underline" href="/chat/rooms">Back to list</a>
+    </div>
+    <hr />
+    <div>
+        <form asp-controller="Chat" asp-action="@nameof(ChatController.NewChatRoom)" method="POST">
+            <label asp-for="Name">Name:</label><br />
+            <input asp-for="Name" type="text" />
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</div>

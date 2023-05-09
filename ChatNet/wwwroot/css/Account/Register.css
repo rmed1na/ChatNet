@@ -1,0 +1,33 @@
+.register {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+.register .card {
+  margin-bottom: 4rem;
+  padding: 5rem;
+}
+.register .card__title {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid black;
+}
+.register .card__body--input {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.register .card button {
+  margin-top: 1rem;
+  width: 100%;
+}
+.register .footer a {
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=Register.css.map */

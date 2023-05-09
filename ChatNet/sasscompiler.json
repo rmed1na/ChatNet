@@ -1,0 +1,13 @@
+{
+  "SourceFolder": "wwwroot/css",
+  "TargetFolder": "wwwroot/css",
+  "Arguments": "--style=expanded",
+  "GenerateScopedCss": true,
+  "ScopedCssFolders": [ "Views", "Pages", "Shared", "Components" ],
+  "IncludePaths": [],
+  "Configurations": {
+    "Debug": {
+      "Arguments": "--style=expanded"
+    }
+  }
+}

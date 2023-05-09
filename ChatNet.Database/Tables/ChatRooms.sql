@@ -1,0 +1,9 @@
+﻿CREATE TABLE [ChatRooms]
+(
+	[ChatRoomId] INT IDENTITY NOT NULL,
+	[CreatedDate] DATETIME NOT NULL,
+	[UpdatedDate] DATETIME NULL,
+	[Name] NVARCHAR(64) NOT NULL,
+	[StatusCode] INT NOT NULL,
+	CONSTRAINT [PK_ChatRooms] PRIMARY KEY (ChatRoomId)
+)

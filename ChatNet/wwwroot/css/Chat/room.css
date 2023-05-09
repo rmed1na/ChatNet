@@ -1,0 +1,10 @@
+.chatRooms .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chatRooms .header__actions a {
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=room.css.map */

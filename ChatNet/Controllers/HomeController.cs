@@ -1,9 +1,13 @@
 ﻿using ChatNet.Models;
+using ChatNet.Utils.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace ChatNet.Controllers
 {
+    [Route("[controller]")]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -13,12 +17,19 @@ namespace ChatNet.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        [Route("")]
+        [Route("index")]
         public IActionResult Index()
         {
+            var userData = IdentityUtility.GetIdentityUserData(HttpContext.User?.Identity);
+            ViewData["username"] = userData?.Username;
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        [Route("chat")]
+        public IActionResult Chat()
         {
             return View();
         }

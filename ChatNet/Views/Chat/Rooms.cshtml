@@ -1,0 +1,22 @@
+﻿@model ICollection<ChatRoom>
+@{
+    ViewData["Title"] = "Chat rooms";
+}
+<link rel="stylesheet" type="text/css" href="~/css/Chat/room.css" />
+<div class="chatRooms">
+    <div class="header">
+        <h2 class="header__title">Chatrooms</h2>
+        <div class="header__actions">
+            <a href="/chat/room/new">Add new</a>
+        </div>
+    </div>
+    <hr />
+    <ol>
+    @foreach (var room in Model.OrderBy(x => x.CreatedDate))
+    {
+        <li>
+            <a href="/chat/room/@room.ChatRoomId">@room.Name</a>
+        </li>
+    }
+    </ol>
+</div>
