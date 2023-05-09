@@ -1,5 +1,6 @@
 ﻿using ChatNet.Data.Models;
 using ChatNet.Utils.DateTime;
+using Ganss.Xss;
 using System.Text;
 
 namespace ChatNet.Utils.Chats
@@ -8,7 +9,7 @@ namespace ChatNet.Utils.Chats
     {
         public static string BuildMessage(ChatRoomPost post, string? externalOwnerName = null)
         {
-            //TODO: Sanitize message content to avoid code injection
+            var htmlSanitizer = new HtmlSanitizer();
             var builder = new StringBuilder();
             builder
                 .Append('[')
@@ -24,7 +25,7 @@ namespace ChatNet.Utils.Chats
 
             builder
                 .Append(": ")
-                .Append(post.Message);
+                .Append(htmlSanitizer.Sanitize(post.Message));
 
             return builder.ToString();
         }
