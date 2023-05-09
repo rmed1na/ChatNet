@@ -31,7 +31,15 @@ namespace ChatNet.Controllers
             if (room == null)
                 return NotFound("Chatroom not found");
 
-            return View("~/Views/Chat/Chat.cshtml", room);
+            var posts = await _chatRepo.GetLatestPostsAsync(roomId, 50);
+            var viewModel = new ChatRoomViewModel
+            {
+                Id = room.ChatRoomId,
+                Name = room.Name,
+                LatestPosts = posts
+            };
+
+            return View("~/Views/Chat/Chat.cshtml", viewModel);
         }
 
         [HttpGet]

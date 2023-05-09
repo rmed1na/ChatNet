@@ -27,9 +27,10 @@ namespace ChatNet.Data.Context.Configuration
 
             builder.Entity<ChatRoomPost>(e =>
             {
-                e.ToTable("ChatRoomPost");
+                e.ToTable("ChatRoomPosts");
                 e.HasKey(x => x.ChatRoomPostId);
                 e.Property(x => x.ChatRoomPostId).UseIdentityColumn();
+                e.HasOne(x => x.Owner).WithMany().HasForeignKey(x => x.UserId);
             });
         }
     }

@@ -8,5 +8,7 @@ namespace ChatNet.Data.Models
         public int ChatRoomId { get; set; }
         public int UserId { get; set; }
         public string Message { get; set; } = string.Empty;
+
+        public virtual User? Owner { get; set; }
     }
 }

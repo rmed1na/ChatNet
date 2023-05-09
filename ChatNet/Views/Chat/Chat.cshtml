@@ -1,12 +1,16 @@
-﻿@model ChatRoom
+﻿@model ChatRoomViewModel
 @{
     ViewData["Title"] = "Chat";
 }
 <link rel="stylesheet" type="text/css" href="~/css/Chat/chat.css" />
-<div id="chatContainer" class="chat" data-roomId="@Model.ChatRoomId">
+<div id="chatContainer" class="chat" data-roomId="@Model.Id">
     <h2>@Model.Name chatroom</h2>
     <hr />
     <div id="messagesContainer" class="list">
+        @foreach (var post in Model.LatestPosts?.OrderBy(x => x.CreatedDate) ?? Enumerable.Empty<ChatRoomPost>())
+        {
+            <div class="list__item">@ChatDisplayUtility.BuildMessage(post)</div>
+        }
     </div>
     <div class="input">
         <textarea id="messageText"></textarea>

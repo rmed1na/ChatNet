@@ -5,6 +5,7 @@ let roomId = parseInt(document.getElementById('chatContainer').getAttribute('dat
 let connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 disableSend();
 
+// Hub methods
 connection.start().then(function () {
     started = true;
     subscribeToChatroom();
@@ -16,13 +17,18 @@ connection.on("NewMessageReceived", function (user, timestamp, message) {
     let parent = document.getElementById('messagesContainer');
     let chatItem = document.createElement('div');
 
-    chatItem.textContent = `[${timestamp}] ${user}: ${message}`;
+    chatItem.textContent = message;
     chatItem.classList.add('list__item');
-
     parent.appendChild(chatItem);
     parent.scrollTo(0, parent.scrollHeight);
 });
 
+connection.on("HubException", function (ex) {
+    console.error('The chatHub has thrown an exception', ex);
+});
+
+
+// Event listeners
 document.getElementById("btnSendMessage").addEventListener("click", function (event) {
     let input = document.getElementById('messageText');
     let message = input.value;
@@ -40,6 +46,7 @@ document.getElementById('messageText').addEventListener('keyup', function (event
         disableSend();
 });
 
+// Helpers
 function disableSend() {
     document.getElementById("btnSendMessage").disabled = true;
 }

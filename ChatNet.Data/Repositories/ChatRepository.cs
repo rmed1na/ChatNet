@@ -18,6 +18,12 @@ namespace ChatNet.Data.Repositories
             await _ctx.SaveChangesAsync();
         }
 
+        public async Task AddPostAsync(ChatRoomPost post)
+        {
+            await _ctx.ChatRoomPosts.AddAsync(post);
+            await _ctx.SaveChangesAsync();
+        }
+
         public async Task<ICollection<ChatRoom>> GetRoomsAsync()
         {
             return await _ctx.ChatRooms
@@ -27,6 +33,14 @@ namespace ChatNet.Data.Repositories
 
         public async Task<ChatRoom?> GetRoomAsync(int roomId)
             => await _ctx.ChatRooms.FirstOrDefaultAsync(x => x.ChatRoomId == roomId);
+
+        public async Task<ICollection<ChatRoomPost>> GetLatestPostsAsync(int roomId, int take)
+        {
+            return await _ctx.ChatRoomPosts
+                .Where(x => x.ChatRoomId == roomId)
+                .Take(take)
+                .ToListAsync();
+        }
 
         public async Task<bool> RoomNameExistsAsync(string name)
             => await _ctx.ChatRooms.AnyAsync(x => x.Name.ToLower() == name.ToLower());
