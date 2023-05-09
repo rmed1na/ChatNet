@@ -1,14 +1,21 @@
 ﻿using ChatNet.Data.Models;
 using ChatNet.Utils.DateTime;
+using Ganss.Xss;
 using System.Text;
 
 namespace ChatNet.Utils.Chats
 {
     public static class ChatDisplayUtility
     {
+        /// <summary>
+        /// Builds the message that will be displayed on the user screen from a post inside the chatroom
+        /// </summary>
+        /// <param name="post">The chatroom post object</param>
+        /// <param name="externalOwnerName">External user (in case the user doesn't have a login)</param>
+        /// <returns></returns>
         public static string BuildMessage(ChatRoomPost post, string? externalOwnerName = null)
         {
-            //TODO: Sanitize message content to avoid code injection
+            var htmlSanitizer = new HtmlSanitizer();
             var builder = new StringBuilder();
             builder
                 .Append('[')
@@ -24,7 +31,7 @@ namespace ChatNet.Utils.Chats
 
             builder
                 .Append(": ")
-                .Append(post.Message);
+                .Append(htmlSanitizer.Sanitize(post.Message));
 
             return builder.ToString();
         }

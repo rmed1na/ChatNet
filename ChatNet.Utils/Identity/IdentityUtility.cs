@@ -6,6 +6,11 @@ namespace ChatNet.Utils.Identity
 {
     public static class IdentityUtility
     {
+        /// <summary>
+        /// Gives back general authenticated user data
+        /// </summary>
+        /// <param name="identity">User identity</param>
+        /// <returns></returns>
         public static IdentityUserData? GetIdentityUserData(IIdentity? identity)
         {
             if (identity is not ClaimsIdentity claimsIdentity)

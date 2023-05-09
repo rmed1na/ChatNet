@@ -3,6 +3,9 @@ using ChatNet.Data.Repositories;
 
 namespace ChatNet
 {
+    /// <summary>
+    /// Handles dependency injection for the web application
+    /// </summary>
     public static class DependencyInjection
     {
         public static void Configure(IServiceCollection services)

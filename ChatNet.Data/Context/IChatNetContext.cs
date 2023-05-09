@@ -11,7 +11,17 @@ namespace ChatNet.Data.Context
         DbSet<ChatRoomPost> ChatRoomPosts { get; }
         #endregion
 
+        /// <summary>
+        /// Saves changes made to an entity and tracked by EF (that are pending)
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Saves changes made to an entity and tracked by EF (that are pending)
+        /// </summary>
+        /// <returns></returns>
         int SaveChanges();
     }
 }
