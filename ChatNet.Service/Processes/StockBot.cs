@@ -6,6 +6,9 @@ using System.Text;
 
 namespace ChatNet.Service.Processes
 {
+    /// <summary>
+    /// Background service that listens for new stock quote requests and return back the current stock quote on the market
+    /// </summary>
     public class StockBot
     {
         private readonly IModel _channel;
@@ -29,19 +32,35 @@ namespace ChatNet.Service.Processes
             _httpClient = new HttpClient();
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
+
             _channel.QueueDeclare(
                 queue: MessageBroker.RequestQueue,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
+
+            _channel.QueueDeclare(
+                queue: MessageBroker.ResponseQueue,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
         }
 
+        /// <summary>
+        /// Sets up the bot to listen and reply for stock quote requests
+        /// </summary>
         public void ListenAndReply()
         {
             Console.WriteLine("Listening for new messages in broker");
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += async (sender, args) => { await GetShareQuoteAsync(sender, args); };
+            consumer.Received += async (sender, args) => 
+            { 
+                var result = await ListenAsync(sender, args);
+                Reply(result);
+            };
+
             _channel.BasicConsume(
                 queue: MessageBroker.RequestQueue,
                 autoAck: true,
@@ -55,13 +74,11 @@ namespace ChatNet.Service.Processes
         /// <param name="args">Arguments</param>
         /// <returns></returns>
         /// <exception cref="InvalidDataException"></exception>
-        private async Task GetShareQuoteAsync(object? sender, BasicDeliverEventArgs args)
+        private async Task<string> ListenAsync(object? sender, BasicDeliverEventArgs args)
         {
             Console.WriteLine($"New message in broker received at: {DateTime.Now:dd MMM yyyy hh:mm:ss}");
             ArgumentNullException.ThrowIfNull(sender);
             ArgumentException.ThrowIfNullOrEmpty(_settings.StockApiUrl);
-            
-            var botResponse = string.Empty;
 
             try
             {
@@ -82,19 +99,30 @@ namespace ChatNet.Service.Processes
                     throw new InvalidDataException("Row doesn't have any data");
 
                 if (decimal.TryParse(values[6], out decimal quote))
-                    botResponse = $"{ticker.ToUpper()} quote is ${quote} per share";
+                    return $"{ticker.ToUpper()} quote is ${quote} per share";
                 else
                     throw new InvalidDataException("Can't parse quote value");
             }
             catch (Exception ex)
             {
-                botResponse = $"StockBot exception: {ex.Message}";
+                return $"StockBot exception: {ex.Message}";
                 throw;
             }
-            finally
-            {
-                //TODO: Send botResponse via rabbitmq
-            }
+        }
+
+        /// <summary>
+        /// Gives back the quote response in the response queue
+        /// </summary>
+        /// <param name="response">The current stock quote on the market at close time</param>
+        private void Reply(string response)
+        {
+            var bytes = Encoding.UTF8.GetBytes(response);
+
+            _channel.BasicPublish(
+                exchange: string.Empty,
+                routingKey: MessageBroker.ResponseQueue,
+                basicProperties: null,
+                body: bytes);
         }
 
         /// <summary>
