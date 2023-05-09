@@ -22,6 +22,10 @@ namespace ChatNet.Data.Repositories
         {
             await _ctx.ChatRoomPosts.AddAsync(post);
             await _ctx.SaveChangesAsync();
+
+            // Keeps unnecessary references detached right away. Saves memory
+            if (_ctx is ChatNetContext ctx)
+                ctx.Entry(post).State = EntityState.Detached;
         }
 
         public async Task<ICollection<ChatRoom>> GetRoomsAsync()

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 #region Services
+var appSettingsSection = builder.Configuration.GetSection("Application");
 var appSettings = builder.Configuration
     .GetSection("Application")
     .Get<AppSettings>();
@@ -38,7 +39,7 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddSassCompiler();
 }
-
+builder.Services.Configure<AppSettings>(appSettingsSection);
 DependencyInjection.Configure(builder.Services);
 #endregion
 
