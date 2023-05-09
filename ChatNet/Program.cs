@@ -1,7 +1,7 @@
 using ChatNet;
 using ChatNet.Data.Context;
+using ChatNet.Data.Models.Settings;
 using ChatNet.Hubs.Utils;
-using ChatNet.Models.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
