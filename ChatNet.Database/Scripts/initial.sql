@@ -34,6 +34,7 @@ BEGIN
 				[Password] NVARCHAR(1024) NOT NULL,
 				CONSTRAINT [PK_Users] PRIMARY KEY (UserId)
 			)
+			INSERT INTO [Users] ([CreatedDate], [Username], [Password]) VALUES (GETDATE(), ''admin'', ''$2b$10$tQz8Tz0r9s/ozQv1jpGrouqRcJDfy5L1yUXDCV9OMQLOzsghm.iom'')
 		END
 
 		IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ''ChatRooms'')
@@ -47,8 +48,9 @@ BEGIN
 				[StatusCode] INT NOT NULL,
 				CONSTRAINT [PK_ChatRooms] PRIMARY KEY (ChatRoomId)
 			)
-			EXEC(''INSERT INTO ChatRooms([CreatedDate], [Name], [StatusCode]) VALUES (GETDATE(), ''General'', 1)'')
+			INSERT INTO ChatRooms([CreatedDate], [Name], [StatusCode]) VALUES (GETDATE(), ''General'', 1)
 		END
+
 		IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ''ChatRoomPosts'')
 		BEGIN
 			CREATE TABLE [ChatRoomPosts]
