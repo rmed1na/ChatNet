@@ -24,19 +24,19 @@
                     <form asp-controller="@controller" asp-action="@nameof(AuthController.Register)" method="POST">
                         <div class="card__body card__body--input">
                             <label asp-for="Username">Username:</label>
-                            <input asp-for="Username" type="text" />
+                            <input asp-for="Username" type="text" placeholder="mandatory" />
                         </div>
                         <div class="card__body card__body--input">
                             <label asp-for="FirstName">First name:</label>
-                            <input asp-for="FirstName" type="text" />
+                            <input asp-for="FirstName" type="text" placeholder="optional" />
                         </div>
                         <div class="card__body card__body--input">
                             <label asp-for="LastName">Last name:</label>
-                            <input asp-for="LastName" type="text" />
+                            <input asp-for="LastName" type="text" placeholder="optional" />
                         </div>
                         <div class="card__body card__body--input">
                             <label asp-for="Password">Password:</label>
-                            <input asp-for="Password" type="password" />
+                            <input asp-for="Password" type="password" placeholder="mandatory" />
                         </div>
                         <button type="submit">Create account</button>
                     </form>
